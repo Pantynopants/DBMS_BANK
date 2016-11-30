@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block page_content %}
+    <div class="col-md-8">
+        {% for foo in list %}
+            <div class="act">
+                <h3><a href="{{ url_for('main.read' , id=foo.id) }}">{{ foo.title }}</a></h3>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
