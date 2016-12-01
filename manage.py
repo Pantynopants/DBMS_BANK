@@ -47,7 +47,9 @@ if __name__ == '__main__':
 """
 # first time run you should do:
 python manage.py db init
+
 # after change the DB model u should do:
+
 python manage.py db migrate -m "first init db"
 python manage.py db upgrade
 

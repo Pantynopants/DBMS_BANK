@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin 
 import hashlib
 
+import Transaction
 SALT = "@#3k25l23#KW#LRsekr@#"
 
 
@@ -40,10 +41,15 @@ class User(UserMixin, db.Model):
     # password_hash = db.Column(db.String(256))
     # user_cookies = db.Column(db.Text)
     real_name = db.Column(db.String(64), unique=True)
-    article = db.relationship('Article', backref=db.backref('users'))
+    # article = db.relationship('Article', backref=db.backref('users'))
 
-    id_bank_account = db.Column(db.Integer, db.ForeignKey('bank_account.id'))
-    id_transaction = db.Column(db.Integer, db.ForeignKey('transaction.id'))
+    # id_bank_account = db.Column(db.Integer, db.ForeignKey('bank_account.id'))
+    db.relationship('BankAccount', backref=db.backref('users'))
+    db.relationship('transaction', backref=db.backref('users'))
+    db.relationship('CompanyBill', backref=db.backref('users'))
+    db.relationship('Equipment', backref=db.backref('users'))
+
+    # id_transaction = db.Column(db.Integer, db.ForeignKey('transaction.id'))
 
     wallet = db.Column(db.Float)
     # @property
@@ -75,6 +81,35 @@ class User(UserMixin, db.Model):
         # self.makeCookie(args['username'])
         # if "password" in args.keys():
         #     self.password = str(args["password"])
+
+    @classmethod
+    def get_users(self):
+        users = db.session.query(User).all()
+        return users
+    
+    
+    @classmethod
+    def get_user_by_id(self, user_id):
+        user = db.session.query(User).filter(User.id == user_id).first()
+        return user
+
+    @classmethod
+    def get_user_by_expression(self, expression):
+        """
+        expression: str
+        """
+        user = db.session.query(User).filter(eval(expression)).first()
+        return user
+
+
+    @classmethod
+    def get_trans_by_user_id(self, user_id):
+        try:
+            trans = db.session.query(Transaction.Transaction).filter(Transaction.Transaction.user_name == user_id).first()
+        except Exception, e:
+            raise e
+        
+        return trans
 
 
 

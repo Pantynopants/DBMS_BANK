@@ -1,1 +1,1 @@
-__all__=['User', 'Article', 'Transaction', 'Clerk', 'CompanyBill', 'EqBill', 'Equipment', 'BankBill', 'BankAccount']
+__all__=[ 'Transaction','User', 'Article', 'Clerk', 'CompanyBill', 'EqBill', 'Equipment', 'BankBill', 'BankAccount']

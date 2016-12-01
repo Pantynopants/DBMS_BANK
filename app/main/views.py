@@ -11,7 +11,7 @@ from . import main
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    a = Article.query.all()
+    a = Transaction.Transaction.query.all()
     return render_template('main/index.html', list=a)
     # template_env = jinja2.Environment(loader=jinja2.FileSystemLoader('template'))
     # template_env.get_template('base.html')

@@ -9,9 +9,9 @@ class EqBill(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     id_clerk = db.Column(db.Integer, db.ForeignKey('clerk.id'))
-    id_equipment = db.Column(db.Integer, db.ForeignKey('equipment.id'))
+    id_equipment = db.Column(db.Integer, db.ForeignKey('equipment.id', onupdate="CASCADE", ondelete="CASCADE"))
 
-    current_usage = db.Column(db.Float, db.ForeignKey('equipment.current_usage'))
+    current_usage = db.Column(db.Float, db.ForeignKey('equipment.current_usage', onupdate="CASCADE", ondelete="CASCADE"))
     date = db.Column(db.DATETIME, default = datetime.utcnow())
 
 

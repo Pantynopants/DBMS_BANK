@@ -79,32 +79,32 @@ def logout():
     
 
 
-@admin.route('/article', methods=['GET', 'POST'])
-@login_required
-def article():
-    form = PostArticleForm()
-    alist = Article.query.all()
-    if form.validate_on_submit():
-        acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
-                          user_id=current_user.id)
-        db.session.add(acticle)
-        flash(u'文章添加成功')
-        redirect(url_for('admin.index'))
-    return render_template('admin/article.html', form=form, list=alist)
+# @admin.route('/article', methods=['GET', 'POST'])
+# @login_required
+# def article():
+#     form = PostArticleForm()
+#     alist = Article.query.all()
+#     if form.validate_on_submit():
+#         acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
+#                           user_id=current_user.id)
+#         db.session.add(acticle)
+#         flash(u'文章添加成功')
+#         redirect(url_for('admin.index'))
+#     return render_template('admin/article.html', form=form, list=alist)
 
 
-@admin.route('/article/del', methods=['GET'])
-@login_required
-def article_del():
-    if request.args.get('id') is not None and request.args.get('a') == 'del':
-        x = Article.query.filter_by(id=request.args.get('id')).first()
-        if x is not None:
-            db.session.delete(x)
-            db.session.commit()
-            flash(u'已经删除' + x.title)
-            return redirect(url_for('admin.article'))
-        flash(u'请检查输入')
-        return redirect(url_for('admin.article'))
+# @admin.route('/article/del', methods=['GET'])
+# @login_required
+# def article_del():
+#     if request.args.get('id') is not None and request.args.get('a') == 'del':
+#         x = Article.query.filter_by(id=request.args.get('id')).first()
+#         if x is not None:
+#             db.session.delete(x)
+#             db.session.commit()
+#             flash(u'已经删除' + x.title)
+#             return redirect(url_for('admin.article'))
+#         flash(u'请检查输入')
+#         return redirect(url_for('admin.article'))
 
 
 # @admin.route('/category', methods=['GET', 'POST'])
