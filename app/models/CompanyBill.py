@@ -13,6 +13,8 @@ class CompanyBill(db.Model):
     date = db.Column(db.DATETIME, default = datetime.utcnow())
     money = db.Column(db.Float)
 
+    id_transaction = db.Column(db.Integer, db.ForeignKey('transaction.id'))
+
     def __init__(self, **args):
         
         if (len(args) > 5):

@@ -12,7 +12,7 @@ class Equipment(db.Model):
     clerk_id = db.relationship(
         'Transaction' 
         # ,secondary = Transaction.Transaction 
-        ,backref=db.backref('equipments', lazy='joined')
+        ,backref=db.backref('equipments', lazy='joined', uselist=False)
         ,foreign_keys=[Transaction.Transaction.equipment_id]
         # ,primaryjoin = "Equipment.id==Transaction.transaction.c.equipment_id"
         # secondaryjoin = id==Transaction.transaction.c.right_node_id,

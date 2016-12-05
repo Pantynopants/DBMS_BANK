@@ -1,1 +1,1 @@
-__all__=['db_utils']
+__all__=['db_utils', 'deco_utils']

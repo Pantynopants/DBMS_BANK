@@ -2,7 +2,7 @@
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell
 from flask import render_template, redirect, url_for, flash, request, session
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from app import create_app, db
 from app.models import *
@@ -37,8 +37,15 @@ def list_routes():
 
 @app.before_request
 def make_session_permanent():
+    # print("#"*80)
     session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=120)
+
+
+@app.before_first_request
+def before_first_request():
+    print '########### Restarted, first request @ {} ############'.format(
+        datetime.utcnow())
 
 if __name__ == '__main__':
 

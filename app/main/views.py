@@ -11,6 +11,7 @@ from . import main
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+    
     a = Transaction.Transaction.query.all()
     return render_template('main/index.html', list=a)
     # template_env = jinja2.Environment(loader=jinja2.FileSystemLoader('template'))
@@ -18,10 +19,12 @@ def index():
     # return template_env.render()
 
 
-# @main.route('/read/', methods=['GET', 'POST'])
-# def read():
-#     a = Article.query.filter_by(id=request.args.get('id')).first()
-#     if a is not None:
-#         return render_template('main/read.html', a = a)
-#     flash(u'未找到相关文章')
-#     return redirect(url_for('main.index'))
+@main.route('/read/', methods=['GET', 'POST'])
+def read():
+    a = request.args.get('trans')       # runturn an unicode
+    # print(a)
+    a = Transaction.Transaction.get_transaction_by_id(int(a))
+    if a is not None:
+        return render_template('main/read.html', a = a)
+    flash(u'未找到相关文章')
+    return redirect(url_for('main.index'))

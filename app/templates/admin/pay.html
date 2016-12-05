@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block page_content %}
+    <div class="col-md-6">
+        {{ wtf.quick_form(form) }}
+    </div>
+    <div class="col-md-6">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>transaction id</th>
+                <th>transaction date</th>
+                <th>operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for foo in list %}
+                <tr>
+                    <td>{{ foo.id }}</td>
+                    <th>{{ foo.title }}</th>
+                    <td><a href="{{ url_for('admin.transaction_modify',id=foo.id,a='del') }}">pay</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -36,3 +36,9 @@ class BankAccount(db.Model):
         """
         bank_account = db.session.query(BankAccount).filter(eval(expression)).first()
         return bank_account
+
+
+"""
+db.backref('items', lazy='dynamic')
+can only be used in many to many relationships
+"""

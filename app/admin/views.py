@@ -5,12 +5,12 @@ from flask_login import login_required, current_user, login_user, logout_user
 from forms import *
 from ..models import *
 from .. import db
-from ..utils import db_utils as Utils
+from ..utils import db_utils 
 from . import admin
 
 @admin.route('/')
 def index():
-    print("1")
+    # print("1")
     return render_template('admin/index.html')
 
 
@@ -20,51 +20,42 @@ def login():
     if cookie exists, log in without form
     else give an random one
     """
-    # user = User.query.filter(User.username == form.username.data).first()
-    flag, user = Utils.vaildation_user(request)
-    form = CookieLoginForm()
-    if flag:
-        login_user(user)
-        return redirect(request.args.get('next') or url_for('admin.index'))
-    else:
-        
-        if form.validate_on_submit():
-            if form.username.data is not None and not Utils.isUserExist(form.username.data):
-                user = User(username=form.username.data, real_name=form.real_name.data)
-                Utils.commit_data(db, user)
-                print(user.id)
-                flash(u'您已经注册成功')
-                login_user(user)
-                
-                redirect_to_index = redirect(request.args.get('next') or url_for('admin.index'))
-                response = current_app.make_response(redirect_to_index )  
-                response.set_cookie('USERID',value=form.username.data)
-                return response
-            flash(u'user already exists')
-
+    form = LoginForm()
+    if form.validate_on_submit():
+        print(form.username.data)
+        user = User.User.get_user_by_username(form.username.data)
+        if user is not None and user.verify_password(form.password.data):
+            login_user(user)
+            return redirect(request.args.get('next') or url_for('admin.index'))
+        else:
+            flash(u'user do not exist')
+        print user, form.password.data
+        flash(u'log in faild')
     return render_template('admin/login.html', form=form)
 
 
-# @admin.route('/register', methods=['GET', 'POST'])
-# def register():
-#     register_key = 'zhucema'
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         if form.registerkey.data != register_key:
-#             flash(u'注册码不符,请返回重试.')
-#             return redirect(url_for('admin.register'))
-#         else:
-#             if form.password.data != form.password2.data:
-#                 flash(u'两次输入密码不一')
-#                 return redirect(url_for('admin.register'))
-#             else:
-#                 user = User(username=form.username.data, password=form.password.data, real_name=form.real_name.data)
-#                 from ..Utils import commit_data
-#                 commit_data(db, user)
-#                 print(user.id)
-#                 flash(u'您已经注册成功')
-#                 return redirect(url_for('admin.login'))
-#     return render_template('admin/register.html', form=form)
+@admin.route('/register', methods=['GET', 'POST'])
+def register():
+    # register_key = 'zhucema'
+    form = RegistrationForm()
+    if form.validate_on_submit() and not User.User.isUserExist(form.username.data):
+        # if form.registerkey.data != register_key:
+        #     flash(u'注册码不符,请返回重试.')
+        #     return redirect(url_for('admin.register'))
+        # else:
+        if form.password.data != form.password2.data:
+            flash(u'两次输入密码不一')
+            return redirect(url_for('admin.register'))
+        else:
+            user = User.User()
+            user.username=form.username.data 
+            user.real_name=form.real_name.data
+            user.password=form.password.data
+            db_utils.commit_data(db, user)
+            print(user.username)
+            flash(u'您已经注册成功')
+            return redirect(url_for('admin.login'))
+    return render_template('admin/register.html', form=form)
 
 
 @admin.route('/logout')
@@ -79,21 +70,40 @@ def logout():
     
 
 
-# @admin.route('/article', methods=['GET', 'POST'])
-# @login_required
-# def article():
-#     form = PostArticleForm()
-#     alist = Article.query.all()
-#     if form.validate_on_submit():
-#         acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
-#                           user_id=current_user.id)
-#         db.session.add(acticle)
-#         flash(u'文章添加成功')
-#         redirect(url_for('admin.index'))
-#     return render_template('admin/article.html', form=form, list=alist)
+@admin.route('/transaction', methods=['GET', 'POST'])
+@login_required
+def transaction_modify():
+    alist = Transaction.Transaction.query.all()
+    a = request.args.get('trans')       # runturn an unicode
+    # print(a)
+    trans_instance = Transaction.Transaction.get_transaction_by_id(int(a))
+    user = db.session.query(User.User).filter(User.User.real_name == trans_instance.user_name).first()
+    if user:
+        wallet = user.wallet
+    else:
+        print("ERROR: can not find user")
+    form = PostTransactionForm(default = wallet)
+    
+
+    if form.validate_on_submit():
+        if form.payment.data != None :
+            if form.payment.data == 'wallet':
+                if form.wallet.data != None and form.wallet.data != 0:
+                    user.pay_trans(trans=[trans_instance], number = form.wallet.data)
+                else:
+                    flash(u'nothing in wallet! use bank card instead!')
+                    redirect(url_for('admin.transaction'))
+            elif form.payment.data == 'bank_card':
+                if form.bank_card.data != None and form.bank_card.data != 0:
+                    user.pay_trans(trans=[trans_instance], number = form.bank_card.data)
+
+        db.session.commit()
+        flash(u'pay successful')
+        redirect(url_for('admin.index'))
+    return render_template('admin/article.html', form=form, list=alist)
 
 
-# @admin.route('/article/del', methods=['GET'])
+# @admin.route('/transaction/del', methods=['GET'])
 # @login_required
 # def article_del():
 #     if request.args.get('id') is not None and request.args.get('a') == 'del':
@@ -102,9 +112,9 @@ def logout():
 #             db.session.delete(x)
 #             db.session.commit()
 #             flash(u'已经删除' + x.title)
-#             return redirect(url_for('admin.article'))
+#             return redirect(url_for('admin.transaction'))
 #         flash(u'请检查输入')
-#         return redirect(url_for('admin.article'))
+#         return redirect(url_for('admin.transaction'))
 
 
 # @admin.route('/category', methods=['GET', 'POST'])
