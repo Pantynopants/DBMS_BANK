@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block page_content %}
+    <div class="col-md-6">
+        <h2> Bill Total</h2>
+        <table class="table">
+
+            <thead>
+            <tr>
+                <th>Bill number: </th>
+                <th>Bill money: </th>
+                <th>date: </th>
+            </tr>
+            </thead>
+            <tbody>
+            
+                <tr>
+                    <td>{{ num }}</td>
+                    <th>{{ cost }}</th>
+                    <th>{{ date }}</th>
+                </tr>
+            
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h2> Bill Details</h2>
+        <table class="table">
+
+            <thead>
+            <tr>
+                <th>bill id</th>
+                <th>bill serial_number</th>
+                <th>date</th>
+                <th>usage</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for foo in list %}
+                <tr>
+                    <td>{{ foo.id }}</td>
+                    <td>{{ foo.serial_number }}</td>
+                    <th>{{ (foo.date|string)[5:10] }}</th>
+                    <th>{{ foo.exchange }}</th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -60,7 +60,7 @@ class User(UserMixin, db.Model):
 
     db.relationship('CompanyBill', backref=db.backref('users', uselist=False))
 
-    bank_bill_items = db.relationship('BankBillItem', backref=db.backref('users', uselist=False))
+    bank_bill_items = db.relationship('BankBillItem', backref=db.backref('users'))
 
     db.relationship('Equipment', backref=db.backref('users', uselist=False))
 
@@ -150,25 +150,37 @@ class User(UserMixin, db.Model):
         """
         trans.usage -= number
         date_now = datetime.utcnow()
+        company = Clerk.Clerk.add_to_company_bill(user=self, date=date_now, money = number, trans = trans)
         my_bank_log = User.get_my_bank_bill_items(self.real_name)
-        # print("#"*40)
-        # print(my_bank_log, type(my_bank_log))
-        # print("#"*40)
+        
+        serial_num = random.randint(1000, 9999)
+        print("#"*40)
+        print(company)
+        print(serial_num)
+        print("#"*40)
+
         bill = BankBill.BankBillItem(
             id_user = self
             , user_name = self.real_name
             , exchange = number
             , date = date_now
-            , serial_number = random.randint(1000, 9999)
+            , serial_number = serial_num
             , bank = 1
+            # , company_bill = company
             )
+        bill.company_bill.append(company)
+        print(type(bill.company_bill))
+        db_utils.commit_data(db, bill)
         if my_bank_log == None:
             my_bank_log = []
         my_bank_log.append(bill)
-        self.bank_bill_items = my_bank_log
-        # db_utils.commit_data(db, self)
-        print(self.bank_bill_items)
-        Clerk.Clerk.add_to_company_bill(user=self, date=date_now, money = number, trans = trans)
+        self.bank_bill_items.extend(my_bank_log)
+        db.session.commit()
+        print("#"*40)
+        print(bill.company_bill)
+        print("#"*40)
+        # print(self.bank_bill_items)
+        
         return trans
 
     @classmethod
@@ -207,7 +219,7 @@ class User(UserMixin, db.Model):
                     break
         else:
             self.set_trans_usage(trans=trans[0], number=number)
-        print("success")
+        print("pay trans in User successful")
 
     @deco_utils.vaildation_parameter
     def refund_trans(self, serial_number=None, number=0):
@@ -215,19 +227,23 @@ class User(UserMixin, db.Model):
         if bank_bill == None:
             print("can not find this transaction: No such serial_number")
             return
-        company_bill = CompanyBill.CompanyBill.query.filter(CompanyBill.CompanyBill.date == bank_bill.date).first()
-        if company_bill == None:
+        print(bank_bill.exchange)
+        print(bank_bill.company_bill)
+        # company_bill = CompanyBill.CompanyBill.query.filter(CompanyBill.CompanyBill.date == bank_bill.date).first()
+        # bank_bill.company_bill
+        if bank_bill.company_bill == None:
             print("can not find this transaction: No such record in company")
             return
-        self.set_trans_usage(trans=company_bill.transaction, number=company_bill.money*(-1))
-
-    @staticmethod
-    def submit_company(user_id = None, date = None, money = 0):
-        """
-        add one row to company bill
-        """
-        db_utils.commit_data(db, CompanyBill.CompanyBill(id_user = user_id, date = date, money = money))
+        self.set_trans_usage(trans=bank_bill.company_bill[0].transaction, number=bank_bill.company_bill[0].money*(-1))
         return True
+
+    # @staticmethod
+    # def submit_company(user_id = None, date = None, money = 0):
+    #     """
+    #     add one row to company bill
+    #     """
+    #     db_utils.commit_data(db, CompanyBill.CompanyBill(id_user = user_id, date = date, money = money))
+    #     return True
 
     @staticmethod
     def isUserExist(name):   

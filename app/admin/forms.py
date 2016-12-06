@@ -48,17 +48,19 @@ class PostCategoryForm(Form):
 
 
 class PostTransactionForm(Form):
-    payment = SelectField(u'payment', choices=[('wallet', 'wallet'), ('bank_card', 'bank_card')])
+    payment = SelectField(u'payment', choices=[('wallet', 'wallet'), ('bank_card', 'bank_card')], default = 'bank_card')
     wallet = FloatField(u'wallet')
 
     bank_card = FloatField(u'bank_card')
     
-
     submit = SubmitField(u'pay')
 
-    def __init__(self, default = None, **arg):
-        super(User, self).__init__(**args)
-        self.wallet = FloatField(u'wallet', default = default)
+class PostTransactionReFundForm(Form):
+    serial_number = StringField(u'serial_number')
+
+    submit = SubmitField(u'refund')
+
+    
 
 
         

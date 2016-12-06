@@ -18,14 +18,16 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">Transactions</a></li>
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('admin.index') }}">Pay</a></li>
+                        <li><a href="{{ url_for('admin.transaction_modify') }}">Pay</a></li>
+                        <li><a href="{{ url_for('admin.transaction_refund') }}">Refund</a></li>
+                        <li><a href="{{ url_for('admin.check') }}">check</a></li>
                         
                         
                     {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
-                        <li><a href="#">ID: {{ current_user.get_id() }}</a></li>
+                        <li><a href="{{ url_for('admin.index') }}">ID: {{ current_user.get_id() }}</a></li>
                         <li><a href="{{ url_for('admin.logout') }}">Logout</a></li>
                     {% else %}
                         <li><a href="{{ url_for('admin.register') }}">Register</a></li> 

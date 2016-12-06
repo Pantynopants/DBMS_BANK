@@ -5,20 +5,24 @@
         {{ wtf.quick_form(form) }}
     </div>
     <div class="col-md-6">
+        <h2>Your Refund</h2>
         <table class="table">
+
             <thead>
             <tr>
-                <th>文章编号</th>
-                <th>文章标题</th>
-                <th>操作</th>
+                <th>bill id</th>
+                <th>bill serial_number</th>
+                <th>date</th>
+                <th>usage</th>
             </tr>
             </thead>
             <tbody>
             {% for foo in list %}
                 <tr>
                     <td>{{ foo.id }}</td>
-                    <th>{{ foo.title }}</th>
-                    <td><a href="{{ url_for('admin.transaction_modify',id=foo.id,a='del') }}">删除</a></td>
+                    <td>{{ foo.serial_number }}</td>
+                    <th>{{ (foo.date|string)[5:10] }}</th>
+                    <th>{{ foo.exchange }}</th>
                 </tr>
             {% endfor %}
             </tbody>

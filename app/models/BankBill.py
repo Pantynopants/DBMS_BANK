@@ -47,7 +47,7 @@ class BankBillItem(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     
     user_name = db.Column(db.Integer, db.ForeignKey('user.real_name', onupdate="CASCADE", ondelete="CASCADE"))
-    id_user = db.relationship('User', backref=db.backref('bank_bill_item', uselist=False), foreign_keys=[user_name])
+    id_user = db.relationship('User', backref=db.backref('bank_bill_item'), foreign_keys=[user_name])
 
     id_bank_bill = db.Column(db.Integer, db.ForeignKey('bank_bill.id'))
 
@@ -58,9 +58,12 @@ class BankBillItem(db.Model):
     date = db.Column(db.DATETIME, default = datetime.utcnow())
     exchange = db.Column(db.Float)
 
+    # id_company_bill = db.Column(db.Integer, db.ForeignKey('company_bill.id'))
+    company_bill = db.relationship('CompanyBill', backref=db.backref('bank_bill_item'))
+
     def __init__(self, **args):
         
-        if (len(args) > 7):
+        if (len(args) > 9):
             print("wrong args number")
             return
         self.__dict__.update(args)

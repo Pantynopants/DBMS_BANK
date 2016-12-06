@@ -67,3 +67,4 @@ class Clerk(db.Model):
         comp1.users = user
         comp1.transaction = trans
         db_utils.commit_data(db, comp1)
+        return comp1

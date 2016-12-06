@@ -9,7 +9,12 @@ class CompanyBill(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
-    id_bank_bill = db.Column(db.Integer, db.ForeignKey('bank_bill.id', onupdate="CASCADE", ondelete="CASCADE"))
+    
+    id_bank_bill_item = db.Column(db.Integer, db.ForeignKey('bank_bill_item.id', onupdate="CASCADE", ondelete="CASCADE"))
+
+    # bank_bill_items = db.relationship("BankBillItem")
+    # id_bank_bill_items = db.Column(db.Integer, db.ForeignKey('bank_bill_item.id'))
+
     date = db.Column(db.DATETIME, default = datetime.utcnow())
     money = db.Column(db.Float)
 

@@ -10,20 +10,22 @@
                     <th>clerk ID: </th>
                     <th>equipment ID: </th>
                     <th>Date: </th>
+                    <th>Usage: </th>
                     <th>operation </th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for foo in list %}
+                
                     <tr>
                         <td>{{ a.clerk_id }}</td>
                         <th>{{ a.equipment.id }}</th>
                         <th>{{ (a.date|string)[5:10] }}</th>
+                        <th>{{ a.usage }}</th>
                         {% if current_user.is_authenticated %}
-                        <td><a href="{{ url_for('admin.transaction_del',id=foo.id,a='del') }}">pay</a></td>
+                        <td><a href="{{ url_for('admin.transaction_modify',id=a.id) }}">pay</a></td>
                         {% endif %}
                     </tr>
-                {% endfor %}
+               
                 </tbody>
             </table>
         </div>
