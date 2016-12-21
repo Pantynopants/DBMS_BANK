@@ -8,25 +8,29 @@ A demo of flask-sqlalchemy, flask-bootstrap, Flask-Script and flask-wtf, with DB
 
 ## Using 
 
-### environment 
-1. clone it
-2. `python install -r requirements.txt`
+### environment   
+1. clone it  
+2. `python install -r requirements.txt`  
 
-*Flask-Script* as command tool 
-### first time run you should do:
-`python manage.py db init`
-### after change the DB model u should do:
-`python manage.py db migrate -m "first init db"`
-`python manage.py db upgrade`
-*or *  `python _dev.py` * to delete them*
-### always run:
+*Flask-Script* as command tool   
+### first time run you should do:  
+
+`python manage.py db init`  
+
+### after change the DB model u should do:  
+
+`python manage.py db migrate -m "first init db"`  
+`python manage.py db upgrade`  
+*or *  `python _dev.py` * to delete them and init again*  
+
+### always run:  
 `python manage.py runserver`
 
 ## structure 
-`/app` for MVC files
-`/config.py` for DB connect and SQLALCHEMY options 
-`/manage.py` for `@app.before_request`
-...
+`/app` for MVC files  
+`/config.py` for DB connect and SQLALCHEMY options   
+`/manage.py` for `@app.before_request`  
+...  
 
 
 ## libs 
